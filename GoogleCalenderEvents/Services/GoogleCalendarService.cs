@@ -43,7 +43,7 @@ public class GoogleCalendarService : IGoogleCalendarService
                 CancellationToken.None,
                 new FileDataStore(credentialPath, true)).Result;
         }
-
+        
         return
             new CalendarService(new BaseClientService.Initializer()
             {
@@ -133,11 +133,11 @@ public class GoogleCalendarService : IGoogleCalendarService
         }
     }
 
-    public void DeleteEvent(string eventId)
+    public async Task DeleteEvent(string eventId)
     {
         try
         {
-            calendarService.Events.Delete(CALENDAR_ID, eventId).Execute();
+            await calendarService.Events.Delete(CALENDAR_ID, eventId).ExecuteAsync();
         }
         catch (Exception ex)
         {

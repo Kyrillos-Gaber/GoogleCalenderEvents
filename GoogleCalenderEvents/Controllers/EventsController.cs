@@ -61,11 +61,11 @@ public class EventsController : ControllerBase
     }
 
     [HttpDelete("{eventId}")]
-    public IActionResult DeleteEvent(string eventId)
+    public async Task<IActionResult> DeleteEvent(string eventId)
     {
         try
         {
-            calendarService.DeleteEvent(eventId);
+            await calendarService.DeleteEvent(eventId);
             return NoContent();
         }
         catch (Exception ex)
