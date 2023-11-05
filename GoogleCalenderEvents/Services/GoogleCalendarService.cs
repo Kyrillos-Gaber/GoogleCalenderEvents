@@ -25,10 +25,9 @@ public class GoogleCalendarService : IGoogleCalendarService
 
     private CalendarService CreateCalendarService()
     {
-        string[] scopes = { "https://www.googleapis.com/auth/calendar", "https://www.googleapis.com/auth/calendar/events" };
+        string[] scopes = { "https://www.googleapis.com/auth/calendar" };
 
         string appName = configuration.GetSection("GoogleAppName").Value!;
-        //string appName = "ATechnologyTask-KyrillosGaber";
 
         UserCredential credential;
 

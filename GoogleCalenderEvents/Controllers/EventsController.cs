@@ -39,7 +39,7 @@ public class EventsController : ControllerBase
         try
         {
             var res = await calendarService.Create(calendarEvent);
-            return Ok(new { Status = "Success", Result = res });
+            return StatusCode(201, new { Status = "Success", Result = res });
         }
         catch (Exception ex)
         {
