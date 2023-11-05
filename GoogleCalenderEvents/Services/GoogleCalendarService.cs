@@ -45,7 +45,7 @@ public class GoogleCalendarService : IGoogleCalendarService
                 new FileDataStore(credentialPath, true)).Result;
         }
 
-        return 
+        return
             new CalendarService(new BaseClientService.Initializer()
             {
                 HttpClientInitializer = credential,
@@ -57,8 +57,9 @@ public class GoogleCalendarService : IGoogleCalendarService
     {
         try
         {
-            var res = await calendarService.Events.Get(CALENDAR_ID, eventId).ExecuteAsync();
-            return mapper.Map<GoogleCalendar>(res);
+            var @event = await calendarService.Events.Get(CALENDAR_ID, eventId).ExecuteAsync();
+
+            return mapper.Map<GoogleCalendar>(@event);
         }
         catch (Exception ex)
         {
@@ -79,7 +80,7 @@ public class GoogleCalendarService : IGoogleCalendarService
         try
         {
             CheckDateNotHolidayOrInPast(@event.Start);
-            
+
             Event eventCalendar = mapper.Map<Event>(@event);
 
             EventsResource.InsertRequest eventRequest = calendarService.Events.Insert(eventCalendar, CALENDAR_ID);
@@ -94,17 +95,37 @@ public class GoogleCalendarService : IGoogleCalendarService
     }
 
 
-    public async Task<IEnumerable<GoogleCalendar>> GetEventsAsync()
+    public async Task<Tuple<IEnumerable<GoogleCalendar>, string>> GetEventsAsync(
+        DateTime? fromDate = null,
+        DateTime? toDate = null,
+        string? pageToken = null,
+        int? resultsCount = null,
+        string? searchQuery = null)
     {
         try
         {
             EventsResource.ListRequest request = calendarService.Events.List(CALENDAR_ID);
-            request.MaxResults = 2500;
+
+            if (fromDate.HasValue)
+                request.TimeMin = fromDate.Value;
+            if (toDate.HasValue)
+                request.TimeMax = toDate.Value;
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
+                request.Q = searchQuery;
+
+            request.MaxResults =
+                (resultsCount <= 0 || resultsCount > 2500 || resultsCount is null) ? 10 : resultsCount;
+
+            if (pageToken is not null)
+                request.PageToken = pageToken;
+
             Events events = await request.ExecuteAsync();
 
-            var list = mapper.Map<IEnumerable<GoogleCalendar>>(events.Items);
+            var result = mapper.Map<IEnumerable<GoogleCalendar>>(events.Items);
 
-            return list;
+            return
+                new Tuple<IEnumerable<GoogleCalendar>, string>(result, events.NextPageToken);
         }
         catch (Exception ex)
         {

@@ -6,7 +6,8 @@ public interface IGoogleCalendarService
 {
     void DeleteEvent(string eventId);
 
-    Task<IEnumerable<GoogleCalendar>> GetEventsAsync();
+    Task<Tuple<IEnumerable<GoogleCalendar>, string>> GetEventsAsync(DateTime? fromDate = null, 
+        DateTime? toDate = null, string? pageToken = null, int? resultsCount = null, string ? searchQuery = null);
 
     Task<GoogleCalendar> Create(GoogleCalendarCreate @event);
 

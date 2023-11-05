@@ -49,10 +49,15 @@ public class EventsController : ControllerBase
 
 
     [HttpGet]
-    public async Task<IActionResult> GetEvents()
+    public async Task<IActionResult> GetEvents(
+        [FromQuery] DateTime? fromDate = null,
+        [FromQuery] DateTime? toDate = null,
+        [FromQuery] string? pageToken = null,
+        [FromQuery] int? resultCount = null,
+        [FromQuery] string? searchQuery = null)
     {
-        var res = await calendarService.GetEventsAsync();
-        return Ok(new { Status = "Success", Result = res });
+        var res = await calendarService.GetEventsAsync(fromDate, toDate, pageToken, resultCount, searchQuery);
+        return Ok(new { Status = "Success", Result = res.Item1, NextPageToken = res.Item2 });
     }
 
     [HttpDelete("{eventId}")]
