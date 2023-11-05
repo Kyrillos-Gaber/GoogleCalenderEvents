@@ -1,5 +1,3 @@
-# GoogleCalenderEvents
-
 # Google Calendar Events API Documentation
 
 ## Introduction
