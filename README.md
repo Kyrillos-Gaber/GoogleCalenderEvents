@@ -74,7 +74,7 @@ Welcome to the documentation for the Google Calendar Events API. This API allows
 ### Run the Application
 
 - Start the application using `dotnet run`.
-- The API will be available at `http://localhost:7220`.
+- The API will be available at `https://localhost:7220`.
 
 ## Testing Instructions
 
